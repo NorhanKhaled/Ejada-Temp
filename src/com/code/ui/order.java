@@ -43,7 +43,17 @@ public class order implements Serializable {
 	private String errorMsg;
 	private Collection <User> userList;
 	private List <Place> placeList;
-	
+	private Place place;
+	private User user;
+	private Long orderItem;
+	public Long getOrderItem() {
+		return orderItem;
+	}
+
+	public void setOrderItem(Long orderItem) {
+		this.orderItem = orderItem;
+	}
+
 	public void addItem(OrderView ord)
 	{
 		Long orderId = ord.getId();
@@ -57,6 +67,7 @@ public class order implements Serializable {
 		displayAllOrders();
 		userList = UserService.getSingleton().getAllUsers();
 		placeList = PlaceService.retrievePlaces(); 
+	
 	}
 
 	public void edit(OrderView o) {
@@ -74,7 +85,11 @@ public class order implements Serializable {
 	}
 
 	public void search() {
-		setOrders(orderService.find(SUName, SPName, SNAme, SID, null, null));
+		//user = orderService.getOwnerById(ownerID);
+		//SUName = user.getUsername();
+		//place = orderService.getPlaceById(placeID);
+		//SPName = place.getName();
+		setOrders(orderService.find(null, null, SNAme, SID, placeID, ownerID , orderItem));
 
 	}
 
@@ -96,7 +111,8 @@ public class order implements Serializable {
 		order.setOwnerID((Long) sessionMap.get(Login.SESSION_KEY_USER_ID));
 		order.setDate(dat);
 		orderService.insert(order);
-		displayAllOrders();
+		
+		  displayAllOrders();
 		
 
 	}
@@ -110,16 +126,26 @@ public class order implements Serializable {
 	public void save(OrderView Toupdate) {
 
 		orderService.update(Toupdate.getOrder());
+		  Order order = Toupdate.getOrder();
+		  order.setStatus(Toupdate.getStatus());
+		  place=orderService.getPlaceById(Toupdate.getPlaceId());
+		  Toupdate.setPlaceName(place.getName());
+		  user = orderService.getOwnerById(Toupdate.getOwnerId());
+		  Toupdate.setOwnerName(user.getUsername());
 		OrderView.edit(Toupdate);
 		displayAllOrders();
+		
 
 	}
 
-	public void delete(Order r) {
+	public void delete(OrderView r) {
 		try {
 			errorMsg="";
-			orderService.delete(r);
+			Long ordId = r.getId();
+			
+			orderService.delete(r.getOrder());
 			orders.remove(r);
+		    //displayAllOrders();
 		} catch (Exception e) {
 			errorMsg="cant delete this order it has open items";
 		}
@@ -256,6 +282,22 @@ public class order implements Serializable {
 
 	public void setPlaceList(List <Place> placeList) {
 		this.placeList = placeList;
+	}
+
+	public Place getPlace() {
+		return place;
+	}
+
+	public void setPlace(Place place) {
+		this.place = place;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 

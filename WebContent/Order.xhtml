@@ -49,6 +49,10 @@
 					<th><label for="num">Order Num:</label></th>
 					<td class="col-md-3" style="width: initial;"><h:inputText
 							type="num" class="form-control" id="num" value="#{order.SID}"></h:inputText></td>
+				<th><label for="num">Order Item:</label></th>
+					<td class="col-md-3" style="width: initial;"><h:inputText
+							type="num" class="form-control" id="num" value="#{order.orderItem}"></h:inputText></td>
+				
 				</tr>
 
 		
@@ -82,13 +86,13 @@
 										<h:outputLabel value="OrderName:" />
 										<h:inputText value="#{order.name}" id="orderNAME" />
 										<h:selectOneMenu value="#{order.selectedPlace}">
-											<f:selectItems value="#{place.places}" var="plac"
+											<f:selectItems value="#{order.placeList}" var="plac"
 												itemValue="#{plac.name}" />
 										</h:selectOneMenu>
 									</div>
 									<div class="modal-footer">
-										<h:commandButton update="data" action="#{order.add}"
-											value="Save">
+										<h:commandButton action="#{order.add}"
+											value="Save"> 																				
 										</h:commandButton>
 									</div>
 								</div>
@@ -126,14 +130,16 @@
 									<f:facet name="header">OwnerName</f:facet>
 									<h:outputText value="#{ord.ownerName}"
 										rendered="#{not ord.editable}" />
-									<h:inputText value="#{ord.ownerName}"
-										rendered="#{ord.editable}" />
+									<h:selectOneMenu value="#{ord.ownerId}" rendered="#{ord.editable}" >
+						   	<f:selectItem  itemValue="-1" itemLabel=""/>
+						  	<f:selectItems value="#{order.userList}" var="names" itemValue="#{names.id}" itemLabel="#{names.name}" />
+						                 </h:selectOneMenu>
 								</h:column>
 								<h:column>
 									<f:facet name="header">Place</f:facet>
 									<h:outputText value="#{ord.placeName}" rendered="#{not ord.editable}" />
 									<h:selectOneMenu value="#{ord.placeId}" rendered="#{ord.editable}">
-										<f:selectItems value="#{place.places}" var="plac" itemValue="#{plac.id}" itemLabel="#{plac.name}" id="placeNAME" />
+										<f:selectItems value="#{order.placeList}" var="plac" itemValue="#{plac.id}" itemLabel="#{plac.name}" id="placeNAME" />
 										</h:selectOneMenu>
 								</h:column>
 								<h:column style="margin:25px">
@@ -141,8 +147,11 @@
 									<f:facet name="header">Status</f:facet>
 									<h:outputText value="#{ord.status}"
 										rendered="#{not ord.editable}" />
-									<h:inputText value="#{ord.order.status}"
-										rendered="#{ord.editable}" />
+								
+										<h:selectOneMenu value="#{ord.status}" rendered= "#{ord.editable}">
+									   <f:selectItem itemValue="closed" itemLabel="closed" />
+									   <f:selectItem itemValue="opened" itemLabel="opened" />
+									  </h:selectOneMenu>
 								</h:column>
 								
 								<h:column>
@@ -164,8 +173,8 @@
 								</h:column>
 								<h:column>
 									<f:facet name="header">Delete</f:facet>
-									<h:commandButton value="Delete" class="btn btn-primary" action="#{order.delete(ord.order)}">
-										<f:ajax execute="data" render="data formId:errorMsgId"></f:ajax>
+									<h:commandButton value="Delete" class="btn btn-primary" action="#{order.delete(ord)}">
+										<f:ajax execute="data" render="data"></f:ajax>
 									</h:commandButton>
 								</h:column>
 								<h:column>

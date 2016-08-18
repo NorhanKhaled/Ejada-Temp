@@ -26,9 +26,10 @@ import com.code.ui.user.Login;
 		+ "AND (:status = '-1' or o.status = :status )"
 		+"AND ( :id  = -1 or o.id = :id )"
 		+"AND ( :placeId = -1 or o.placeId = :placeId)"
-		+"AND ( :ownerId = -1 or o.ownerId = :ownerId)"
+		+"AND ( :ownerId = -1 or o.ownerId = :ownerId)"),
+		
+@NamedQuery(name ="searchByItemOrder" , query ="SELECT o from OrderView o , OrderItemView oi WHERE o.id = oi.orderId")		
 
-		)
 
 })
 public class OrderView implements Serializable{
@@ -150,6 +151,9 @@ public class OrderView implements Serializable{
 		{
 			setActivateList(false);
 		}
+		
+		
+		
 	}
 	
 	@Transient
